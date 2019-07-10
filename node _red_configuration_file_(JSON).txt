@@ -1,0 +1,294 @@
+[
+    {
+        "id": "79f70373.19be3c",
+        "type": "tab",
+        "label": "PROJE-SMARTCARD",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "3296a2af.c2b3be",
+        "type": "mosca in",
+        "z": "79f70373.19be3c",
+        "mqtt_port": "4141",
+        "mqtt_ws_port": 8080,
+        "name": "MQTT SERVER (MOSCA)",
+        "username": "",
+        "password": "",
+        "dburl": "",
+        "x": 635,
+        "y": 94,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ca5e5e71.e4f6c",
+        "type": "mqtt in",
+        "z": "79f70373.19be3c",
+        "name": "MQTT OKUYUCU-SUB-1",
+        "topic": "KartBilgileri",
+        "qos": "2",
+        "datatype": "utf8",
+        "broker": "c02dba02.6bc1e8",
+        "x": 281,
+        "y": 174,
+        "wires": [
+            [
+                "d75d91d7.8a9fc"
+            ]
+        ]
+    },
+    {
+        "id": "9320be4d.daca7",
+        "type": "mqtt out",
+        "z": "79f70373.19be3c",
+        "name": "MQTT YAZICI-PUB-1",
+        "topic": "KartBilgileri",
+        "qos": "",
+        "retain": "",
+        "broker": "c02dba02.6bc1e8",
+        "x": 638,
+        "y": 1034,
+        "wires": []
+    },
+    {
+        "id": "d75d91d7.8a9fc",
+        "type": "function",
+        "z": "79f70373.19be3c",
+        "name": "Kart ID Kontrol Sorgusu?",
+        "func": "msg.topic=\"select * from kartlar where kartId=\"+msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 298,
+        "y": 263,
+        "wires": [
+            [
+                "fd5fc6e4.7e2748"
+            ]
+        ]
+    },
+    {
+        "id": "fd5fc6e4.7e2748",
+        "type": "mysql",
+        "z": "79f70373.19be3c",
+        "mydb": "1a62bc09.de8c04",
+        "name": "Kart Sorgusu (MYSQL)",
+        "x": 301,
+        "y": 366,
+        "wires": [
+            [
+                "74c5f116.89a7f",
+                "d1096e3c.24eb"
+            ]
+        ]
+    },
+    {
+        "id": "d0e817cc.22a5f8",
+        "type": "mqtt out",
+        "z": "79f70373.19be3c",
+        "name": "GeriBesleme",
+        "topic": "GeriBesleme",
+        "qos": "",
+        "retain": "",
+        "broker": "c02dba02.6bc1e8",
+        "x": 622,
+        "y": 614,
+        "wires": []
+    },
+    {
+        "id": "c05b8ce5.8f406",
+        "type": "mqtt in",
+        "z": "79f70373.19be3c",
+        "name": "",
+        "topic": "GeriBesleme",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "c02dba02.6bc1e8",
+        "x": 1236,
+        "y": 1107,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6afcc347.4acffc",
+        "type": "mysql",
+        "z": "79f70373.19be3c",
+        "mydb": "1a62bc09.de8c04",
+        "name": "Ekle/Guncelle (MYSQL)",
+        "x": 909,
+        "y": 368,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "74c5f116.89a7f",
+        "type": "function",
+        "z": "79f70373.19be3c",
+        "name": "Bakiye Kontrol",
+        "func": "try{\n   temp= msg.payload[0].bakiye;\n}catch(exception){\n    msg.payload=-1;\n    return  msg;\n}\n\nif(msg.payload[0].bakiye<1.75){\n    msg.payload=0;\n    return  msg;\n}\n\nif(msg.payload[0].bakiye>=1.75){\n   \nmsg.topic=\"update kartlar set bakiye=\"+(msg.payload[0].bakiye-1.75)+\" where kartID=\"+msg.payload[0].kartID+\"\";\n\nmsg.payload=msg.payload[0].bakiye-1.75;\n\n   return  msg;\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 617,
+        "y": 440,
+        "wires": [
+            [
+                "d0e817cc.22a5f8",
+                "6afcc347.4acffc"
+            ]
+        ]
+    },
+    {
+        "id": "e1701edd.ab6b9",
+        "type": "function",
+        "z": "79f70373.19be3c",
+        "name": "kalan_bakiye_gonder",
+        "func": "\nmsg.payload=msg.payload[0].bakiye;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1249,
+        "y": 1000,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c0364b0.f7c61b8",
+        "type": "inject",
+        "z": "79f70373.19be3c",
+        "name": "",
+        "topic": "",
+        "payload": "1",
+        "payloadType": "num",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 276,
+        "y": 1188,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bb418578.ef7258",
+        "type": "inject",
+        "z": "79f70373.19be3c",
+        "name": "",
+        "topic": "",
+        "payload": "0",
+        "payloadType": "num",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 274,
+        "y": 1237,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d1096e3c.24eb",
+        "type": "function",
+        "z": "79f70373.19be3c",
+        "name": "Hareket Geçmişi Ekle",
+        "func": "try{\n   suankibakiye=msg.payload[0].bakiye;\n}catch(exception){\n    msg=0;\n    return  msg;\n}\n\nif(suankibakiye>=1.75){\n   msg.topic=\"insert into kartHareketleri(kartID,bakiye,tarih)values(\"+msg.payload[0].kartID+\",\"+1.75+\",'\"+new Date().toLocaleString()+\"')\";\n}else{msg=0;}\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 626,
+        "y": 293,
+        "wires": [
+            [
+                "6afcc347.4acffc"
+            ]
+        ]
+    },
+    {
+        "id": "266ce7fe.b345b8",
+        "type": "inject",
+        "z": "79f70373.19be3c",
+        "name": "",
+        "topic": "",
+        "payload": "2515037217",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 582.5,
+        "y": 1141,
+        "wires": [
+            [
+                "9320be4d.daca7"
+            ]
+        ]
+    },
+    {
+        "id": "9390f928.ebaf6",
+        "type": "function",
+        "z": "79f70373.19be3c",
+        "name": "",
+        "func": " msg.topic=\"insert into kartHareketleri(kartID,bakiye,tarih)values(2515037217,\"+1.75+\",'2019.03.01 00:00:00')\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1034.5,
+        "y": 1136,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bacee5ed.94257",
+        "type": "inject",
+        "z": "79f70373.19be3c",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 899.5,
+        "y": 1095,
+        "wires": [
+            [
+                "9390f928.ebaf6"
+            ]
+        ]
+    },
+    {
+        "id": "c02dba02.6bc1e8",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "SMARTCARD",
+        "broker": "localhost",
+        "port": "4141",
+        "clientid": "deneme",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "1a62bc09.de8c04",
+        "type": "MySQLdatabase",
+        "z": "",
+        "host": "127.0.0.1",
+        "port": "3306",
+        "db": "smartCard",
+        "tz": ""
+    }
+]
