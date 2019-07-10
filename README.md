@@ -52,3 +52,4 @@ hareket geçmişine bilgiler kaydedildi ve MQTT ile kalan bakiye bilgisi Serial 
 Geri besleme alan Esp32 veriyi yorumlayarak kullanıcıya Serial Monitor de  bilgilendirme mesajı ,led  ve  buzzer ile de bildirimde bulundu.<br>
 Kart kullanıcıları bakiyelerini ,geçmişe dönük kart hareketlerini gözlemlemek  ve bakiye yüklemek için  Web sitesi hazdırlandı.
 </p>
+<h1>Not: Detaylandırılacaktır.</h1>
