@@ -41,3 +41,14 @@ SMARTCARD sistemi(donanım) otobüslere kurulur ve yolculardan talep edilen ücr
         <td>1 Adet BreadBoard</td>
     </tr>
 </table>
+
+
+<br>
+
+<h2>Yöntem</h2>
+<p>
+Ubuntu sunucu üzerine Node-Red,Mosca MQTT Broker,MYSQL,Apache kurulumları yapıldı. RFID kartları kullanmak için RC522 modülünü Esp32 kartına bağlandı ve SPI haberleşme başlatıldı. Sonrasında Esp32 ile Node-Red iletişimi için MQTT Broker kullanıldı ve okunan kart numarası sunucuya iletildi. Mosca MQTT ile alınan kart numarası MYSQL veri tabanında sorguladı. Alınan çıktıya göre bakiye yeterli ise karttan bakiye düşüldü,
+hareket geçmişine bilgiler kaydedildi ve MQTT ile kalan bakiye bilgisi Serial Monitor ile gösterildi. Bakiye yetersiz veya okutulan kart sistemde tanımlı değilse işlenen bilgi Esp32 ye MQTT ile aktarıldı.<br>
+Geri besleme alan Esp32 veriyi yorumlayarak kullanıcıya Serial Monitor de  bilgilendirme mesajı ,led  ve  buzzer ile de bildirimde bulundu.<br>
+Kart kullanıcıları bakiyelerini ,geçmişe dönük kart hareketlerini gözlemlemek  ve bakiye yüklemek için  Web sitesi hazdırlandı.
+</p>
